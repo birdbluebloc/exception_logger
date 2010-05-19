@@ -42,12 +42,12 @@ class LoggedExceptionsController < ActionController::Base
 		else
 			#we have no pagination so do basic sql pagination
 			params[:limit] ||= 25
-			params[:page] ||= 0
-			page = params[:page]
-			if params[:page].to_i >= 1 then
-				page = params[:page].to_i * params[:limit].to_i
+      # params[:page] ||= 0   # nil.to_i is 0
+			page = params[:page].to_i
+			if page >= 1 then
+				page = (page -1)* params[:limit].to_i
 			end
-			@exceptions = LoggedException.find(:all, :limit => "#{page},#{params[:limit]}", :conditions => conditions.empty? ? nil : parameters.unshift(conditions * ' and '))
+			@exceptions = LoggedException.find(:all, :limit => "#{params[:limit]}", :offset => "#{page}", :conditions => conditions.empty? ? nil : parameters.unshift(conditions * ' and ')) # use the :offset option instead of "offset, limit" syntax, so that it will work with postgres
 		end
     
     respond_to do |format|

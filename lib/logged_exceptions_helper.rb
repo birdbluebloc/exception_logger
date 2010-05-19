@@ -18,11 +18,12 @@ module LoggedExceptionsHelper
 			pagination = paginating_links collection
 			ret = ":: Pages : <strong>#{pagination}</strong>"
 		else
-			next_page = params[:page].to_i + 1
-			prev_page = 0
+		  params[:page] ||= 1
+		  curr_page = params[:page].to_i  # at least 1
+			next_page =  curr_page + 1
 			prev_link = ''
-			if params[:page].to_i > 0 then
-				prev_page = params[:page].to_i - 1
+			if curr_page > 1 then
+				prev_page = curr_page - 1
 				prev_link = "<a href=\"?page=#{prev_page}\"> Previous page</a>"
 			end
 			next_link = "<a href=\"?page=#{next_page}\">Next page</a>"		
